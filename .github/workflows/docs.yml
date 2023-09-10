@@ -1,0 +1,22 @@
+name: docs
+
+on: push
+
+jobs:
+  publish-nixos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+        with:
+          repository: "ryantm/nixpkgs"
+          ref: "rtm-nixos-manual"
+      - uses: cachix/install-nix-action@master
+      - run: |
+          nix build .#nixos-manual-mmdoc
+      - if: success()
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: result/multi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
